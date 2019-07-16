@@ -1,0 +1,7 @@
+Spool E:\TOOLS\restore_&2.log;
+CONNECT  / as sysdba;
+ALTER DATABASE OPEN RESETLOGS;
+SHUTDOWN IMMEDIATE;
+STARTUP PFILE=&1;
+Spool off;
+EXIT;

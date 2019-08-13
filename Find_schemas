@@ -1,0 +1,9 @@
+WITH
+    db_schemas
+    AS
+        (SELECT DISTINCT owner
+           FROM dba_objects)
+SELECT username, created
+  FROM all_users, db_schemas
+ WHERE username IN (owner)
+ order by 2;

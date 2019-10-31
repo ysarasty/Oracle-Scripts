@@ -1,3 +1,30 @@
+--STATS
+
+
+
+SELECT
+'SELECT DISTINCT ''EXECUTE DBMS_STATS.GATHER_SCHEMA_STATS(ownname =>''''''|| A.OWNER||'''''',estimate_percent =>100,DEGREE=>8)@'||A.DB_LINK||' ;'' 
+   FROM DBA_SEGMENTS@'||A.DB_LINK||' A
+                     WHERE A.OWNER NOT IN (''APPQOSSYS'',
+                                           ''SYSTEM'',
+                                           ''OGGADMIN'',
+                                           ''DBSNMP'',
+                                           ''SYS'',
+                                           ''QUEST'',
+                                           ''OUTLN'',
+                                           ''XDB'',
+                                           ''BO_REF'') UNION '
+                                           FROM    DBA_DB_LINKS A
+WHERE A.DB_LINK LIKE 'LINK%';
+
+EXECUTE DBMS_STATS.GATHER_SCHEMA_STATS(ownname =>'SCAR',estimate_percent =>100,DEGREE=>8)@LINK_SCAR ;
+EXECUTE DBMS_STATS.GATHER_SCHEMA_STATS(ownname =>'SCONF',estimate_percent =>100,DEGREE=>8)@LINK_SCONF ;
+EXECUTE DBMS_STATS.GATHER_SCHEMA_STATS(ownname =>'SDC',estimate_percent =>100,DEGREE=>8)@LINK_SDC ;
+EXECUTE DBMS_STATS.GATHER_SCHEMA_STATS(ownname =>'SDD',estimate_percent =>100,DEGREE=>8)@LINK_SDD ;
+EXECUTE DBMS_STATS.GATHER_SCHEMA_STATS(ownname =>'SFIN',estimate_percent =>100,DEGREE=>8)@LINK_SDD ;
+EXECUTE DBMS_STATS.GATHER_SCHEMA_STATS(ownname =>'SREF',estimate_percent =>100,DEGREE=>8)@LINK_SREF ;
+EXECUTE DBMS_STATS.GATHER_SCHEMA_STATS(ownname =>'VAD',estimate_percent =>100,DEGREE=>8)@LINK_SCAR ;
+---
 SELECT ' select * from ( with db_name as (
 select name from v$database@'||DB_LINK||'),
 

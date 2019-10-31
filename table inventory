@@ -1,7 +1,12 @@
-SELECT 'select * from (with db_name as (
-select name from v$database@'||DB_LINK||')
-SELECT B.NAME DB, A.OWNER, SUBSTR(A.TABLE_NAME,0,3), A.TABLE_NAME,A.NUM_ROWS
-  FROM DBA_TABLES@'||DB_LINK||' A, DB_NAME B
+SELECT ' select * from ( with db_name as (
+select name from v$database@'||DB_LINK||'),
+
+LAST_DM AS(SELECT A.TABLE_NAME, A.INSERTS, A.TIMESTAMP, A.TRUNCATED, A.UPDATES,A.DELETES
+    FROM DBA_TAB_MODIFICATIONS @'||DB_LINK||' A
+   )
+
+SELECT B.NAME DB, A.OWNER, SUBSTR(A.TABLE_NAME,0,3), A.TABLE_NAME,A.NUM_ROWS,A.LAST_ANALYZED, C.TIMESTAMP,C.INSERTS, C.TRUNCATED,C.DELETES
+  FROM DBA_TABLES@'||DB_LINK||' A, DB_NAME B, LAST_DM C 
  WHERE A.OWNER IN ((SELECT DISTINCT A.OWNER
                       FROM DBA_SEGMENTS@'||DB_LINK||' A
                      WHERE A.OWNER NOT IN (''APPQOSSYS'',
@@ -13,7 +18,119 @@ SELECT B.NAME DB, A.OWNER, SUBSTR(A.TABLE_NAME,0,3), A.TABLE_NAME,A.NUM_ROWS
                                            ''OUTLN'',
                                            ''XDB'',
                                            ''BO_REF''))) 
-                                           ORDER BY 1,2,3);'
+    AND A.TABLE_NAME = C.TABLE_NAME(+)
+                                           ORDER BY 1,2,3) UNION'
 
 FROM    DBA_DB_LINKS A
-WHERE A.DB_LINK LIKE 'LINK%'
+WHERE A.DB_LINK LIKE 'LINK%';
+
+ DROP TABLE tables_inventory;
+ create table tables_inventory as ( select * from ( with db_name as (
+select name from v$database@LINK_SCAR),
+LAST_DM AS(SELECT A.TABLE_NAME, A.INSERTS, A.TIMESTAMP, A.TRUNCATED, A.UPDATES,A.DELETES
+    FROM DBA_TAB_MODIFICATIONS @LINK_SCAR A
+   )
+
+SELECT B.NAME DB, A.OWNER, SUBSTR(A.TABLE_NAME,0,3), A.TABLE_NAME,A.NUM_ROWS,A.LAST_ANALYZED, C.TIMESTAMP,C.INSERTS, C.TRUNCATED,C.DELETES
+  FROM DBA_TABLES@LINK_SCAR A, DB_NAME B, LAST_DM C 
+ WHERE A.OWNER IN ((SELECT DISTINCT A.OWNER
+                      FROM DBA_SEGMENTS@LINK_SCAR A
+                     WHERE A.OWNER NOT IN ('APPQOSSYS',
+                                           'SYSTEM',
+                                           'OGGADMIN',
+                                           'DBSNMP',
+                                           'SYS',
+                                           'QUEST',
+                                           'OUTLN',
+                                           'XDB',
+                                           'BO_REF'))) 
+    AND A.TABLE_NAME = C.TABLE_NAME(+)
+                                           ORDER BY 1,2,3) UNION
+ select * from ( with db_name as (
+select name from v$database@LINK_SCONF),
+
+LAST_DM AS(SELECT A.TABLE_NAME, A.INSERTS, A.TIMESTAMP, A.TRUNCATED, A.UPDATES,A.DELETES
+    FROM DBA_TAB_MODIFICATIONS @LINK_SCONF A
+   )
+
+SELECT B.NAME DB, A.OWNER, SUBSTR(A.TABLE_NAME,0,3), A.TABLE_NAME,A.NUM_ROWS,A.LAST_ANALYZED, C.TIMESTAMP,C.INSERTS, C.TRUNCATED,C.DELETES
+  FROM DBA_TABLES@LINK_SCONF A, DB_NAME B, LAST_DM C 
+ WHERE A.OWNER IN ((SELECT DISTINCT A.OWNER
+                      FROM DBA_SEGMENTS@LINK_SCONF A
+                     WHERE A.OWNER NOT IN ('APPQOSSYS',
+                                           'SYSTEM',
+                                           'OGGADMIN',
+                                           'DBSNMP',
+                                           'SYS',
+                                           'QUEST',
+                                           'OUTLN',
+                                           'XDB',
+                                           'BO_REF'))) 
+    AND A.TABLE_NAME = C.TABLE_NAME(+)
+                                           ORDER BY 1,2,3) UNION
+ select * from ( with db_name as (
+select name from v$database@LINK_SDC),
+
+LAST_DM AS(SELECT A.TABLE_NAME, A.INSERTS, A.TIMESTAMP, A.TRUNCATED, A.UPDATES,A.DELETES
+    FROM DBA_TAB_MODIFICATIONS @LINK_SDC A
+   )
+
+SELECT B.NAME DB, A.OWNER, SUBSTR(A.TABLE_NAME,0,3), A.TABLE_NAME,A.NUM_ROWS,A.LAST_ANALYZED, C.TIMESTAMP,C.INSERTS, C.TRUNCATED,C.DELETES
+  FROM DBA_TABLES@LINK_SDC A, DB_NAME B, LAST_DM C 
+ WHERE A.OWNER IN ((SELECT DISTINCT A.OWNER
+                      FROM DBA_SEGMENTS@LINK_SDC A
+                     WHERE A.OWNER NOT IN ('APPQOSSYS',
+                                           'SYSTEM',
+                                           'OGGADMIN',
+                                           'DBSNMP',
+                                           'SYS',
+                                           'QUEST',
+                                           'OUTLN',
+                                           'XDB',
+                                           'BO_REF'))) 
+    AND A.TABLE_NAME = C.TABLE_NAME(+)
+                                           ORDER BY 1,2,3) UNION
+ select * from ( with db_name as (
+select name from v$database@LINK_SDD),
+
+LAST_DM AS(SELECT A.TABLE_NAME, A.INSERTS, A.TIMESTAMP, A.TRUNCATED, A.UPDATES,A.DELETES
+    FROM DBA_TAB_MODIFICATIONS @LINK_SDD A
+   )
+
+SELECT B.NAME DB, A.OWNER, SUBSTR(A.TABLE_NAME,0,3), A.TABLE_NAME,A.NUM_ROWS,A.LAST_ANALYZED, C.TIMESTAMP,C.INSERTS, C.TRUNCATED,C.DELETES
+  FROM DBA_TABLES@LINK_SDD A, DB_NAME B, LAST_DM C 
+ WHERE A.OWNER IN ((SELECT DISTINCT A.OWNER
+                      FROM DBA_SEGMENTS@LINK_SDD A
+                     WHERE A.OWNER NOT IN ('APPQOSSYS',
+                                           'SYSTEM',
+                                           'OGGADMIN',
+                                           'DBSNMP',
+                                           'SYS',
+                                           'QUEST',
+                                           'OUTLN',
+                                           'XDB',
+                                           'BO_REF'))) 
+    AND A.TABLE_NAME = C.TABLE_NAME(+)
+                                           ORDER BY 1,2,3) UNION
+ select * from ( with db_name as (
+select name from v$database@LINK_SREF),
+
+LAST_DM AS(SELECT A.TABLE_NAME, A.INSERTS, A.TIMESTAMP, A.TRUNCATED, A.UPDATES,A.DELETES
+    FROM DBA_TAB_MODIFICATIONS @LINK_SREF A
+   )
+
+SELECT B.NAME DB, A.OWNER, SUBSTR(A.TABLE_NAME,0,3), A.TABLE_NAME,A.NUM_ROWS,A.LAST_ANALYZED, C.TIMESTAMP,C.INSERTS, C.TRUNCATED,C.DELETES
+  FROM DBA_TABLES@LINK_SREF A, DB_NAME B, LAST_DM C 
+ WHERE A.OWNER IN ((SELECT DISTINCT A.OWNER
+                      FROM DBA_SEGMENTS@LINK_SREF A
+                     WHERE A.OWNER NOT IN ('APPQOSSYS',
+                                           'SYSTEM',
+                                           'OGGADMIN',
+                                           'DBSNMP',
+                                           'SYS',
+                                           'QUEST',
+                                           'OUTLN',
+                                           'XDB',
+                                           'BO_REF'))) 
+    AND A.TABLE_NAME = C.TABLE_NAME(+)
+                                           ORDER BY 1,2,3)); 

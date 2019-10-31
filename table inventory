@@ -1,0 +1,19 @@
+SELECT 'select * from (with db_name as (
+select name from v$database@'||DB_LINK||')
+SELECT B.NAME DB, A.OWNER, SUBSTR(A.TABLE_NAME,0,3), A.TABLE_NAME,A.NUM_ROWS
+  FROM DBA_TABLES@'||DB_LINK||' A, DB_NAME B
+ WHERE A.OWNER IN ((SELECT DISTINCT A.OWNER
+                      FROM DBA_SEGMENTS@'||DB_LINK||' A
+                     WHERE A.OWNER NOT IN (''APPQOSSYS'',
+                                           ''SYSTEM'',
+                                           ''OGGADMIN'',
+                                           ''DBSNMP'',
+                                           ''SYS'',
+                                           ''QUEST'',
+                                           ''OUTLN'',
+                                           ''XDB'',
+                                           ''BO_REF''))) 
+                                           ORDER BY 1,2,3);'
+
+FROM    DBA_DB_LINKS A
+WHERE A.DB_LINK LIKE 'LINK%'

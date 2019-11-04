@@ -1,0 +1,20 @@
+
+SELECT
+'select df.tablespace_name "Tablespace",
+totalusedspace "Used MB",
+(df.totalspace - tu.totalusedspace) "Free MB",
+df.totalspace "Total MB",
+round(100 * ( (df.totalspace - tu.totalusedspace)/ df.totalspace))
+"Pct. Free"
+from
+(select tablespace_name,
+round(sum(bytes) / 1048576) TotalSpace
+from dba_data_files@'||A.DB_LINK||'
+group by tablespace_name) df,
+(select round(sum(bytes)/(1024*1024)) totalusedspace, tablespace_name
+from dba_segments@'||A.DB_LINK||'
+group by tablespace_name) tu
+where df.tablespace_name = tu.tablespace_name
+And DF.tablespace_name not in (''SYSTEM'',''SYSAUX'',''UNDOTBS1'')  UNION '
+ FROM    DBA_DB_LINKS A
+WHERE A.DB_LINK LIKE 'LINK%';

@@ -17,4 +17,27 @@ end;
 /
 
 
+declare
+  h1   NUMBER;
+begin
+     h1 := dbms_datapump.open (operation => 'IMPORT', job_mode => 'TABLE', remote_link => 'SDD_SOURCE.VP.NET', job_name => 'IMP1', version => 'COMPATIBLE'); 
+    dbms_datapump.set_parallel(handle => h1, degree => 1); 
+    dbms_datapump.add_file(handle => h1, filename => 'IMPORT.LOG', directory => 'DATA_PUMP_DIR', filetype => 3); 
+    dbms_datapump.set_parameter(handle => h1, name => 'KEEP_MASTER', value => 0); 
+    dbms_datapump.metadata_remap(handle => h1, name => 'REMAP_SCHEMA', old_value => 'SDD', value => 'TRANSFORMER'); 
+    dbms_datapump.metadata_remap(handle => h1, name => 'REMAP_TABLESPACE', old_value => 'SDD', value => 'FFF'); 
+    dbms_datapump.metadata_filter(handle => h1, name => 'SCHEMA_EXPR', value => 'IN(''SDD'')'); 
+    dbms_datapump.metadata_filter(handle => h1, name => 'NAME_EXPR', value => 'IN(''REF_ARTICLE'',''REF_PRODUIT'')'); 
+    dbms_datapump.set_parameter(handle => h1, name => 'ESTIMATE', value => 'BLOCKS'); 
+    dbms_datapump.set_parameter(handle => h1, name => 'FLASHBACK_SCN', value => -129743426); 
+    dbms_datapump.set_parameter(handle => h1, name => 'INCLUDE_METADATA', value => 1); 
+    dbms_datapump.set_parameter(handle => h1, name => 'TABLE_EXISTS_ACTION', value => 'REPLACE'); 
+    dbms_datapump.set_parameter(handle => h1, name => 'SKIP_UNUSABLE_INDEXES', value => 0); 
+    dbms_datapump.start_job(handle => h1, skip_current => 0, abort_step => 0); 
+    dbms_datapump.detach(handle => h1); 
+end;
+/
+
+
+
 

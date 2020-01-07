@@ -1,0 +1,17 @@
+******* Get info ************
+  set serveroutput on
+declare
+  feature_boolean number;
+  aux_count number;
+  feature_info clob;
+begin
+  dbms_feature_data_guard(feature_boolean, aux_count, feature_info);
+  dbms_output.put_line(feature_boolean);
+  dbms_output.put_line(feature_info);
+end;
+/
+
+*****
+SELECT NAME,VERSION,CURRENTLY_USED,FEATURE_INFO
+FROM DBA_FEATURE_USAGE_STATISTICS
+WHERE NAME = 'Data Guard'
